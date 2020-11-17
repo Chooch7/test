@@ -1,0 +1,258 @@
+const Discord = require('discord.js');
+const bot = new Discord.Client();
+const ms = require('ms');
+
+const token = 'NzUzOTczMjY0NTQ3NzA4OTg4.X1t-Ug.uN-kcBGNIkPL5R5Ey9SY_iVUikM';
+
+const PREFIX = '-';
+
+var version = 'Beta';
+
+bot.on('ready', () =>{
+    console.log('This bot is online!');
+    bot.user.setActivity("-help | -botlink");
+});
+
+bot.on('message', message=>{
+    if(!message.content.startsWith(PREFIX)) return;
+    let args = message.content.substring(PREFIX.length).split(" ");
+
+    const ed = new Discord.MessageEmbed()
+            .setTitle('Kick')
+            .addField('Member Kicked', args[1])
+            .addField('Kicked by', message.author)
+            .setFooter('Date Kicked', message.createdAt)
+
+
+
+    switch(args[0]){
+       
+        case 'ping':
+            message.channel.send('Finding bots ping...').then(msg =>{
+                const ping = msg.createdTimestamp - message.createdTimestamp;
+                msg.edit(`Chooch Bot's ping is ${ping}ms`);
+            })
+            break;
+
+            case 'help':
+                message.channel.send('hey I bet I have more fucking problems than you my life comes first mortal')
+                break;
+
+                case 'lol':
+                    message.channel.send('https://media.discordapp.net/attachments/769632320160137216/772494714201047050/Screenshot_391.png')
+                    break;
+
+        case 'botlink':
+            message.channel.send('https://discord.com/oauth2/authorize?client_id=745649025688272896&scope=bot&permissions=8')
+            break;
+
+        case 'info':
+            if(args[1] === 'version'){
+                message.channel.send('Version ' + version);
+
+            }else{
+                message.channel.send('')
+            }
+        break;
+
+        case 'calc':
+            let method = args[1];
+            let firstNumber = Number(args[2]);
+            let secondNumber = Number(args[3]);
+            const operations = ['add', 'subtract', 'multiply', 'divide'];
+
+            if (!method) return message.reply('Please state an operation, add, subtract, mulitply, or divide.').then(msg => msg.delete({timeout: 10000}));
+
+            if (!operations.includes(method)) return message.reply('When choosing an operation please select add, subtract, mulitply, or divide. ex: -cal add 1 1').then(msg => msg.delete({timeout: 10000}));
+
+            if (!args[2]) return message.reply('Please state two numbers to put into the calculation').then(msg => msg.delete({timeout: 10000}));
+
+            if (!args[3]) return message.reply('Please state a number to put into the calculation').then(msg => msg.delete({timeout: 10000}));
+
+            if (isNaN(firstNumber)) return message.reply('The first Number you stated was not a Number').then(msg => msg.delete({timeout: 10000}));
+
+            if (isNaN(secondNumber)) return message.reply('The second Number you stated was not a Number').then(msg => msg.delete({timeout: 10000}));
+
+            if (method === 'add') {
+                let doMath = firstNumber + secondNumber
+                message.channel.send(`${firstNumber} + ${secondNumber} = ${doMath}`)
+            }
+
+            if (method === 'subtract') {
+                let doMath = firstNumber - secondNumber
+                message.channel.send(`${firstNumber} - ${secondNumber} = ${doMath}`)
+            }
+
+            if (method === 'multiply') {
+                let doMath = firstNumber * secondNumber
+                message.channel.send(`${firstNumber} x ${secondNumber} = ${doMath}`)
+            }
+
+            if (method === 'divide') {
+                let doMath = firstNumber / secondNumber
+                message.channel.send(`${firstNumber} / ${secondNumber} = ${doMath}`)
+            }
+        break;
+
+        case 'clear':
+            if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send('You need the Manage Messages permission to do this!').then(msg => msg.delete({timeout: 10000}));
+            {if(!args[1]) return message.reply('Error: Please provide a number value')
+            if (isNaN(args[1])) return message.reply('Please Provide a number value').then(msg => msg.delete({timeout: 10000}));
+            message.channel.bulkDelete(args[1])};
+            break;
+
+            case 'old_mute':
+            if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.channel.send('You need the Manage Channels permission to do this!').then(msg => msg.delete({timeout: 10000}));
+            {let aaaaaaa = message.guild.member(message.mentions.users.first() || guil.members.cache.get(args[2]))
+            if(!person) return message.reply("Couldn't find that user");
+
+            let Ineedavariable = message.guild.roles.cache.find(role => role.name === "Member");
+            let Ineedanothervariable = message.guild.roles.cache.find(role => role.name === "Muted");
+
+            if(!muterole) return message.reply("Couldn't find the muted role. If you haven't already make a role called Muted if you want the mute command to work").then(msg => msg.delete({timeout: 10000}));
+            let time = args[2];
+            if(!time){
+                return message.reply("You didn't specify a time for the mute").then(msg => msg.delete({timeout: 10000}));
+            }
+            person.roles.remove(mainrole);
+            person.roles.add(muterole);
+
+            message.channel.send(`@${person.user.tag} has now been muted for ${ms(ms(time))}`);
+            setTimeout(function(){
+                person.roles.add(mainrole);
+                person.roles.remove(muterole);
+                message.channel.send(`@${person.user.tag} has been unmuted`);
+            }, ms(time))};
+            break;
+
+            case 'mute_in_progress':
+            if (message.member.hasPermission('MUTE_MEMBERS')) {
+
+                let person = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[1]))
+
+                if(!person) return message.reply('Couldn\'t find that user').then(msg => msg.delete({timeout: 10000}));
+
+                let mainrole = message.guild.roles.cache.find(role => role.name === 'Member')
+                let muterole = message.guild.roles.cache.find(role => role.name === 'Muted')
+                let time = args[2];
+
+                if (!mainrole) {
+                    message.guild.defaultRole.setPermissions(0);
+                }
+
+                if (!muterole) {
+                    message.channel.send('This Server does not include a Mute Role... I will create one!');
+                    console.log('This server has no mute role... creating one');
+                    message.guild.roles.create({
+                        name: 'Muted',
+                        color: 'GREY',
+                        permissions: ['VIEW_CHANNEL', 'READ_MESSAGE_HISTORY']
+                    }).then(role => console.log(`Created a ${role.name} which has the color of ${role.color} for ${message.guild.name}`)).catch(console.error);
+                    message.channel.send('Mute Role has been Created for the Server!\n Retype the command to Mute the user, since the role was not created before')
+                } else
+                if (!time) {
+                    return message.reply('Please specify a time for the mute').then(msg => msg.delete({timeout: 10000}));
+                }
+
+                person.roles.add(mainrole);
+                person.roles.remove(muterole);
+
+                message.channel.send(`@${person.user.username} has been Muted for ${ms(ms(time))}`);
+                setTimeout(function () {
+                    person.addRole(mainrole.id);
+                    person.removeRole(muterole.id);
+                    message.channel.send(`@${person.user.username} has been Unmuted`)
+                }, ms(time));
+
+
+            } else {
+                message.reply('You need the Mute Members permission to do this!').then(msg => msg.delete({timeout: 10000}));
+            }
+
+            break;
+
+            case 'kick':
+                if(!message.member.hasPermission('KICK_MEMBERS')) return message.channel.send("You need the Kick Members permission to do this!").then(msg => msg.delete({timeout: 10000}));
+                {let toKick = message.mentions.members.first();
+                let reason = args.slice(2).join(" ");
+                if(!args[1]) return message.channel.send('You need to specify a person to kick').then(msg => msg.delete({timeout: 10000}));
+                if(!toKick) return message.channel.send(`${args[1]} isn\'t in this Server`).then(msg => msg.delete({timeout: 10000}));
+                if(!reason) return message.channel.send('You need to specify a reason!').then(msg => msg.delete({timeout: 10000}));
+                if(!toKick.kickable){
+                    return message.channel.send(':x: I can not kick Moderators/Admins').then(msg => msg.delete({timeout: 10000}));
+                }
+                if(toKick.kickable){
+                    let x = new Discord.MessageEmbed()
+                    .setTitle('Successfully Kicked')
+                    .addField('Member Kicked', toKick, true)
+                    .addField('Kicked by', message.author, true)
+                    .addField('Reason Specified', reason)
+
+                    message.channel.send(x);
+                    toKick.kick();
+
+                }}
+            break;
+
+            case 'ban':
+                if(!message.member.hasPermission('BAN_MEMBERS')) return message.channel.send("You need the Ban Members permission to do this!").then(msg => msg.delete({timeout: 10000}));
+                {let toBan = message.mentions.members.first();
+                let reason = args.slice(2).join(" ");
+                if(!args[1]) return message.channel.send('You need to specify a person to ban').then(msg => msg.delete({timeout: 10000}));
+                if(!toBan) return message.channel.send(`${args[1]} isn\'t in this Server`).then(msg => msg.delete({timeout: 10000}));
+                if(!reason) return message.channel.send('You need to specify a reason!').then(msg => msg.delete({timeout: 10000}));
+                if(!toBan.bannable){
+                    return message.channel.send(':x: I can not ban Moderators/Admins').then(msg => msg.delete({timeout: 10000}));
+                }
+                if(toBan.bannable){
+                    let x = new Discord.MessageEmbed()
+                    .setTitle('Successfully Banned')
+                    .addField('Member Banned', toBan, true)
+                    .addField('Banned by', message.author, true)
+                    .addField('Reason Specified', reason)
+
+                    message.channel.send(x);
+                    toBan.ban();
+
+                }}
+            break;
+
+            
+
+            case 'abandoned_lol':
+            if(!message.member.hasPermission("KICK_MEMBERS")) return message.channel.send('You need the Kick Members permission to do this!').then(msg => msg.delete({timeout: 10000}));
+                {const user = message.mentions.users.first();
+                if(user){
+                    const member = message.guild.member(user);
+                    if(member){
+                        member.kick('You were kicked from the Server! You can comeback but don\'t do what you did again').then(() =>{
+                            message.reply(`Successfully Kicked ${user.tag}`);
+
+                        }).catch(err =>{
+                            message.reply('I was unable to kick the member. Move my role higher than the user specified\'s highest role!').then(msg => msg.delete({timeout: 10000}));
+                            console.log(err);
+                        });    
+                    }   else{
+                        message.reply("That user isn\'t in this Server").then(msg => msg.delete({timeout: 10000}));
+                    }
+                } else {
+                    message.reply('You need to specify a person').then(msg => msg.delete({timeout: 10000}))
+                }}
+
+            break;
+
+
+
+            case 'userinfo':
+                const embed = new Discord.MessageEmbed()
+                .setTitle('User Information')
+                .addField('User Name', message.author.username)
+                .addField('Current Server', message.guild.name)
+                .setColor(0x0e6251)
+                .setThumbnail(message.author.displayAvatarURL())
+                message.channel.send(embed);
+                break;
+    }
+});
+
+bot.login(token);
